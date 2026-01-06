@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Journey | Nirvyatha</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="index.html" class="nav-brand">
+            <i class="ri-mental-health-fill"></i> Nirvyatha
+        </a>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="tips.html" class="nav-link">Daily Tips</a>
+            <a href="tasks.html" class="nav-link">Daily Tasks</a>
+            <a href="roadmap.html" class="nav-link active">My Journey</a>
+            <a href="resources.html" class="nav-link">Resources</a>
+            <a href="chat.html" class="btn-primary">Talk Now</a>
+        </div>
+    </nav>
+
+    <div class="daily-container">
+        <div class="daily-header">
+            <h1>Your Consistency Journey</h1>
+            <p>Every small step counts. Celebrate your progress.</p>
+        </div>
+
+        <!-- Current Status -->
+        <div class="streak-status-card">
+            <div class="streak-count">
+                <span id="current-streak">0</span> Days
+            </div>
+            <p id="streak-msg" class="streak-msg">Start your journey today!</p>
+            <button id="checkin-btn" class="btn-primary" onclick="dailyCheckIn()">
+                <i class="ri-check-double-line"></i> Complete Daily Check-In
+            </button>
+        </div>
+
+        <!-- Timeline -->
+        <div class="roadmap-timeline">
+            <!-- Line -->
+            <div class="timeline-line"></div>
+
+            <!-- Milestones -->
+            <div class="milestone" data-days="1">
+                <div class="milestone-icon"><i class="ri-plant-line"></i></div>
+                <div class="milestone-content">
+                    <h3>Day 1: First Step</h3>
+                    <p>The journey of a thousand miles begins with one step.</p>
+                    <span class="badge">🌱 Seed Planter</span>
+                </div>
+            </div>
+
+            <div class="milestone" data-days="3">
+                <div class="milestone-icon"><i class="ri-drop-line"></i></div>
+                <div class="milestone-content">
+                    <h3>Day 3: Building Momentum</h3>
+                    <p>You are showing up for yourself. Keep flowing.</p>
+                    <span class="badge">💧 Flow Seeker</span>
+                </div>
+            </div>
+
+            <div class="milestone" data-days="7">
+                <div class="milestone-icon"><i class="ri-leaf-line"></i></div>
+                <div class="milestone-content">
+                    <h3>Day 7: Week of Calm</h3>
+                    <p>One whole week of mindfulness. You are growing.</p>
+                    <span class="badge">🌿 Peace Keeper</span>
+                </div>
+            </div>
+
+            <div class="milestone" data-days="14">
+                <div class="milestone-icon"><i class="ri-sun-line"></i></div>
+                <div class="milestone-content">
+                    <h3>Day 14: Two Weeks Strong</h3>
+                    <p>Habits are forming. Your light is shining brighter.</p>
+                    <span class="badge">☀️ Radiant Soul</span>
+                </div>
+            </div>
+
+            <div class="milestone" data-days="30">
+                <div class="milestone-icon"><i class="ri-medal-line"></i></div>
+                <div class="milestone-content">
+                    <h3>Day 30: Master of Peace</h3>
+                    <p>A month of dedication. You are truly resilient.</p>
+                    <span class="badge">🧘 Zen Master</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Simple Streak Logic
+        const STORAGE_KEY_STREAK = 'nirvyatha_streak';
+        const STORAGE_KEY_DATE = 'nirvyatha_last_date';
+
+        function initRoadmap() {
+            const streak = parseInt(localStorage.getItem(STORAGE_KEY_STREAK) || '0');
+            const lastDate = localStorage.getItem(STORAGE_KEY_DATE);
+            const today = new Date().toDateString();
+
+            // Check logic
+            if (lastDate !== today) {
+                // If last login was NOT yesterday and NOT today, streak breaks
+                if (lastDate) {
+                    const d1 = new Date(lastDate);
+                    const d2 = new Date();
+                    const diffTime = Math.abs(d2 - d1);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                    if (diffDays > 2) { // Allow 1 missed day logic flexibility or strict? Let's be strict: > 1 day gap breaks it.
+                        // Actually, diffDays=1 means yesterday. diffDays=2 means day before yesterday.
+                        // If diffDays > 1, streak reset.
+                        // Correction: logic above is rough. Let's strictly check "yesterday".
+                    }
+                    // For MVP simplicity: If gap > 1 day, reset visual (but keep count stored separately if we wanted history)
+                    // We will just do: if missed yesterday, reset to 0 in UI logic display.
+
+                    const yesterday = new Date();
+                    yesterday.setDate(yesterday.getDate() - 1);
+                    if (lastDate !== yesterday.toDateString()) {
+                        // user missed yesterday
+                        // We won't auto-reset the stored value to 0 immediately to avoid shocking them before they click check-in, 
+                        // but we can show "Streak at risk"
+                    }
+                }
+            }
+
+            updateUI(streak, lastDate === today);
+        }
+
+        function updateUI(streak, isTodayDone) {
+            document.getElementById('current-streak').textContent = streak;
+
+            const msg = document.getElementById('streak-msg');
+            const btn = document.getElementById('checkin-btn');
+
+            if (isTodayDone) {
+                msg.textContent = "Great job! You've checked in today.";
+                btn.disabled = true;
+                btn.innerHTML = "<i class='ri-check-line'></i> Completed";
+            } else {
+                msg.textContent = streak > 0 ? "Keep your streak alive!" : "Start your journey today.";
+                btn.disabled = false;
+            }
+
+            // Update Milestones
+            document.querySelectorAll('.milestone').forEach(el => {
+                const days = parseInt(el.getAttribute('data-days'));
+                el.classList.remove('completed', 'active', 'locked');
+
+                if (streak >= days) {
+                    el.classList.add('completed');
+                } else if (!el.previousElementSibling || el.previousElementSibling.classList.contains('completed') || streak >= 0 && days === 1) {
+                    // Primitive logic to highlight next target
+                    // If previous is completed (or it's the first one), and this isn't, it's active
+                    // Actually, simpler: find first non-completed
+                }
+            });
+
+            // Set Active (Next Goal)
+            const milestones = Array.from(document.querySelectorAll('.milestone'));
+            const nextGoal = milestones.find(m => parseInt(m.getAttribute('data-days')) > streak);
+            if (nextGoal) nextGoal.classList.add('active');
+        }
+
+        function dailyCheckIn() {
+            let streak = parseInt(localStorage.getItem(STORAGE_KEY_STREAK) || '0');
+            const lastDate = localStorage.getItem(STORAGE_KEY_DATE);
+            const today = new Date().toDateString();
+
+            if (lastDate === today) return; // Already done
+
+            // Check if broken
+            if (lastDate) {
+                const d1 = new Date(lastDate);
+                const d2 = new Date(); // today
+                // Reset time to midnight for calc
+                d1.setHours(0, 0, 0, 0);
+                d2.setHours(0, 0, 0, 0);
+                const diffTime = d2 - d1;
+                const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+                if (diffDays > 1) {
+                    streak = 0; // Broken
+                    alert("Streak reset! Don't worry, every day is a fresh start. 🌱");
+                }
+            }
+
+            streak++;
+            localStorage.setItem(STORAGE_KEY_STREAK, streak);
+            localStorage.setItem(STORAGE_KEY_DATE, today);
+
+            // Animation effect
+            const btn = document.getElementById('checkin-btn');
+            btn.innerHTML = "🎉 Checked In!";
+
+            updateUI(streak, true);
+        }
+
+        window.addEventListener('DOMContentLoaded', initRoadmap);
+    </script>
+</body>
+
+</html>

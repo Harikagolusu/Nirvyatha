@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Challenge | Nirvyatha</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="index.html" class="nav-brand">
+            <i class="ri-mental-health-fill"></i> Nirvyatha
+        </a>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="tips.html" class="nav-link">Daily Tips</a>
+            <a href="tasks.html" class="nav-link active">Daily Challenge</a>
+            <a href="roadmap.html" class="nav-link">My Journey</a>
+            <a href="resources.html" class="nav-link">Resources</a>
+            <a href="chat.html" class="btn-primary">Talk Now</a>
+        </div>
+    </nav>
+
+    <div class="daily-container">
+
+        <div class="daily-header">
+            <h1>Today's Challenge</h1>
+            <p>One small act for a calmer you.</p>
+            <div id="streak-badge" style="
+                display: inline-block;
+                margin-top: 15px;
+                padding: 6px 16px;
+                background: #FFF5F0;
+                color: #E67E22;
+                border-radius: 20px;
+                font-weight: 600;
+                font-size: 0.9rem;
+                box-shadow: 0 2px 10px rgba(230, 126, 34, 0.1);
+            ">
+                🔥 Streak: <span id="streak-count">0</span> Days
+            </div>
+        </div>
+
+        <!-- Challenge Card -->
+        <div class="challenge-card" id="challenge-card">
+            <div class="challenge-icon"><i class="ri-sun-cloudy-line"></i></div>
+            <h2 id="challenge-title">Loading...</h2>
+            <p id="challenge-desc">To help you feel grounded and at peace.</p>
+
+            <button id="complete-btn" class="btn-primary" onclick="completeChallenge()">
+                <i class="ri-check-line"></i> Mark as Completed
+            </button>
+            <div id="completed-msg"
+                style="display: none; color: var(--color-primary); font-weight: 600; margin-top: 20px; font-size: 1.1rem;">
+                <i class="ri-plant-line"></i> <span id="completion-text">Well done for taking a moment for yourself
+                    🌱</span>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const challenges = [
+            { title: "Box Breathing", desc: "Inhale for 4s, hold for 4s, exhale for 4s, hold for 4s. Repeat 3 times." },
+            { title: "Gratitude Pause", desc: "Stop and name 3 small things you are grateful for right now." },
+            { title: "Digital Detox", desc: "Put your phone down for 15 minutes and just look out a window." },
+            { title: "Water Break", desc: "Drink a full glass of water slowly and mindfully." },
+            { title: "Shoulder Drop", desc: "Unclench your jaw. Drop your shoulders away from your ears. Breathe." },
+            { title: "Nature Connect", desc: "Find a leaf, a flower, or the sky. Look at it for 1 minute." },
+            { title: "Kindness Text", desc: "Send a quick message to a friend saying something nice." }
+        ];
+
+        const STORAGE_KEY_CHALLENGE_DATE = 'nirvyatha_challenge_date';
+        const STORAGE_KEY_CHALLENGE_INDEX = 'nirvyatha_challenge_idx';
+        const STORAGE_KEY_COMPLETED = 'nirvyatha_challenge_completed';
+        const STORAGE_KEY_STREAK = 'nirvyatha_streak_count';
+        const STORAGE_KEY_LAST_STREAK_DATE = 'nirvyatha_last_streak_date';
+
+        function initChallenge() {
+            // 1. Load Streak
+            const streak = parseInt(localStorage.getItem(STORAGE_KEY_STREAK) || '0');
+            document.getElementById('streak-count').textContent = streak;
+
+            // 2. Load/Set Daily Challenge
+            const today = new Date().toDateString();
+            const lastDate = localStorage.getItem(STORAGE_KEY_CHALLENGE_DATE);
+            let index = 0;
+
+            if (lastDate !== today) {
+                // New day, new challenge
+                index = Math.floor(Math.random() * challenges.length);
+                localStorage.setItem(STORAGE_KEY_CHALLENGE_DATE, today);
+                localStorage.setItem(STORAGE_KEY_CHALLENGE_INDEX, index);
+                localStorage.setItem(STORAGE_KEY_COMPLETED, 'false'); // Reset completion
+            } else {
+                index = parseInt(localStorage.getItem(STORAGE_KEY_CHALLENGE_INDEX) || '0');
+            }
+
+            const challenge = challenges[index];
+            document.getElementById('challenge-title').textContent = challenge.title;
+            document.getElementById('challenge-desc').textContent = challenge.desc;
+
+            // 3. Check State
+            const isCompleted = localStorage.getItem(STORAGE_KEY_COMPLETED) === 'true';
+            if (isCompleted) {
+                showCompletedState();
+            }
+        }
+
+        function completeChallenge() {
+            // 1. Update Completion State
+            localStorage.setItem(STORAGE_KEY_COMPLETED, 'true');
+
+            // 2. Handle Streak Logic
+            const todayIndex = new Date().setHours(0, 0, 0, 0); // Use timestamp for simpler comparison if needed, but string strict check is safer for basic implementation
+            // Actually, date strings work fine:
+            const todayStr = new Date().toDateString();
+            const lastStreakDate = localStorage.getItem(STORAGE_KEY_LAST_STREAK_DATE);
+            let streak = parseInt(localStorage.getItem(STORAGE_KEY_STREAK) || '0');
+
+            if (lastStreakDate === todayStr) {
+                // Already credited streak for today? (Shouldn't reset if we click again conceptually, but UI hides button)
+                // Do nothing
+            } else {
+                // Check if yesterday
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+
+                if (lastStreakDate === yesterday.toDateString()) {
+                    streak++; // Continued streak
+                } else {
+                    streak = 1; // Broken streak or first time
+                }
+
+                localStorage.setItem(STORAGE_KEY_STREAK, streak);
+                localStorage.setItem(STORAGE_KEY_LAST_STREAK_DATE, todayStr);
+
+                // Update UI immediately
+                document.getElementById('streak-count').textContent = streak;
+
+                // Special Message
+                if (streak > 1) {
+                    document.getElementById('completion-text').innerHTML = `Great job! You're on a <b>${streak}-day streak!</b> 🌱`;
+                } else {
+                    document.getElementById('completion-text').innerHTML = `You're building a healthy habit. Streak started! 🌱`;
+                }
+            }
+
+            showCompletedState();
+
+            // Animation
+            const card = document.getElementById('challenge-card');
+            card.style.transform = 'scale(1.02)';
+            setTimeout(() => card.style.transform = 'scale(1)', 200);
+        }
+
+        function showCompletedState() {
+            document.getElementById('complete-btn').style.display = 'none';
+            document.getElementById('completed-msg').style.display = 'block';
+        }
+
+        window.addEventListener('DOMContentLoaded', initChallenge);
+    </script>
+</body>
+
+</html>

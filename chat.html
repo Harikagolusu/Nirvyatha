@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nirvyatha | Chat</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap"
+    rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/animations.css">
+</head>
+
+<body class="chat-mode">
+
+  <div id="app-container">
+    <!-- Affirmation Banner -->
+    <div id="affirmation-banner" class="affirmation-banner">
+      Daily Reminder: You are enough just as you are.
+    </div>
+
+    <header>
+      <div class="logo">
+        <a href="index.html"
+          style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 8px;">
+          <i class="ri-arrow-left-s-line" style="font-size: 1.2rem;"></i>
+        </a>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <!-- Status indicator will toggle between icon and spinner via JS if desired, 
+                  but for now keeping consistent header -->
+          <i class="ri-mental-health-fill" style="color: var(--color-primary); font-size: 1.5rem;"></i>
+          <div>
+            <h1>Nirvyatha</h1>
+            <span style="font-size: 0.75rem; color: var(--color-text-muted);">Your Safe Space</span>
+          </div>
+        </div>
+      </div>
+      <div class="status">
+        Listening
+      </div>
+    </header>
+
+    <!-- Mode Selection Overlay -->
+    <div id="mode-selection" class="mode-selection-overlay">
+      <h2 style="text-align: center; color: var(--color-primary-dark); margin-bottom: 20px;">How can I support you
+        today?</h2>
+      <div class="mode-grid">
+
+        <!-- EXAM MODE -->
+        <div class="mode-card" onclick="app.selectMode('exam')">
+          <div class="mode-icon">📚</div>
+          <h3>Exam Mode</h3>
+          <p>Confidence for tests & results.</p>
+        </div>
+
+        <!-- STRESS MODE -->
+        <div class="mode-card" onclick="app.selectMode('stress')">
+          <div class="mode-icon">🍃</div>
+          <h3>Stress Mode</h3>
+          <p>Overwhelmed? Let's slow down.</p>
+        </div>
+
+        <!-- CARE MODE -->
+        <div class="mode-card" onclick="app.selectMode('care')">
+          <div class="mode-icon">💙</div>
+          <h3>Care Mode</h3>
+          <p>Feeling low, anxious, or lonely.</p>
+        </div>
+
+      </div>
+      <p style="text-align: center; margin-top: 20px; font-size: 0.9rem; color: var(--color-text-muted);">
+        <i class="ri-shield-check-line"></i> Private & Anonymous
+      </p>
+    </div>
+
+    <div id="chat-history">
+      <!-- Welcome Message -->
+      <div class="message bot">
+        Hello! I'm Nirvyatha. I'm here to listen and support you. <br><br>
+        This is a judgment-free zone. How are you feeling right now?
+      </div>
+    </div>
+
+    <!-- Typing Indicator -->
+    <div id="typing-indicator" class="typing-indicator" style="display: none; padding: 0 16px 16px 16px;">
+      <span></span><span></span><span></span>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions" id="quick-actions">
+      <!-- Injected by JS -->
+      <span class="chip" onclick="app.sendQuick('I just want to talk')">🫂 Just want to talk</span>
+      <span class="chip" onclick="app.sendQuick('I feel stressed')">😟 I'm stressed</span>
+      <span class="chip" onclick="app.sendQuick('Give me a calm tip')">🌿 Calm tip</span>
+      <span class="chip" onclick="app.sendQuick('I feel anxious')">😰 I'm anxious</span>
+    </div>
+
+    <form id="chat-form" class="input-area">
+      <input type="text" id="user-input" placeholder="Type here..." autocomplete="off">
+      <button type="submit" id="send-btn">
+        <i class="ri-send-plane-fill"></i>
+      </button>
+    </form>
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+
+</html>

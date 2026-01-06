@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nirvyatha API Specialist</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #00ff00;
+        }
+
+        .status {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #333;
+        }
+
+        .success {
+            color: #00ff00;
+            border-color: #00ff00;
+        }
+
+        .error {
+            color: #ff0000;
+            border-color: #ff0000;
+        }
+
+        button {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1.2rem;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>API Connection Diagnostic</h1>
+    <div id="output">Click 'Run Test' to check connection...</div>
+    <button onclick="runTest()">Run Test</button>
+
+    <script>
+        async function runTest() {
+            const out = document.getElementById('output');
+            out.innerHTML = "1. Pinging Server Root (http://localhost:3000/)...<br>";
+
+            try {
+                // Step 1: Health Check
+                const health = await fetch('http://localhost:3000/');
+                const healthText = await health.text();
+                out.innerHTML += `<div class="status success">[OK] Server Reachable: "${healthText}"</div>`;
+
+                // Step 2: Chat Endpoint
+                out.innerHTML += "2. Testing /chat Endpoint...<br>";
+                const chat = await fetch('http://localhost:3000/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: "I am happy" })
+                });
+
+                if (chat.ok) {
+                    const json = await chat.json();
+                    out.innerHTML += `<div class="status success">[OK] /chat Response: ${JSON.stringify(json)}</div>`;
+                    out.innerHTML += "<h2 style='color:white'>✅ API IS WORKING PERFECTLY</h2>";
+                } else {
+                    out.innerHTML += `<div class="status error">[FAIL] /chat Error: ${chat.status} ${chat.statusText}</div>`;
+                }
+
+            } catch (err) {
+                out.innerHTML += `<div class="status error">[CRITICAL FAILURE] Could not connect: ${err.message}<br>
+                1. Is 'node server.js' running?<br>
+                2. Is it on port 3000?</div>`;
+            }
+        }
+    </script>
+</body>
+
+</html>

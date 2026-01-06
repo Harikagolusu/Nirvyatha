@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Tips | Nirvyatha</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="index.html" class="nav-brand">
+            <i class="ri-mental-health-fill"></i> Nirvyatha
+        </a>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="tips.html" class="nav-link active">Daily Tips</a>
+            <a href="tasks.html" class="nav-link">Daily Tasks</a>
+            <a href="roadmap.html" class="nav-link">My Journey</a>
+            <a href="resources.html" class="nav-link">Resources</a>
+            <a href="chat.html" class="btn-primary">Talk Now</a>
+        </div>
+    </nav>
+
+    <div class="daily-container">
+        <div class="daily-header">
+            <h1>Daily Mental Health Tip</h1>
+            <p>A small thought to brighten your day.</p>
+        </div>
+
+        <div class="tip-display-card">
+            <div class="tip-content">
+                <p id="tip-text" class="tip-text">Loading inspiration...</p>
+                <div style="margin-top: 20px;">
+                    <i class="ri-heart-3-fill" style="color: var(--color-primary); font-size: 1.5rem;"></i>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <button onclick="loadTip()" class="btn-primary"
+                style="background: white; color: var(--color-primary); border: 1px solid var(--color-primary);">
+                <i class="ri-refresh-line"></i> New Tip
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const tips = [
+            "You don't have to control every thought. You just have to stop letting them control you.",
+            "Rest is productive. Taking a break is not 'wasting time', it's recharging your engine.",
+            "Talk to yourself like you would to someone you love.",
+            "It's okay to not be okay right now. This feeling is temporary.",
+            "Small steps are still progress. You don't have to sprint to the finish line.",
+            "Your worth is not measured by your productivity or your grades.",
+            "Breathe in calm, breathe out stress. Repeat 5 times.",
+            "Focus on what you can control. Let go of what you can't.",
+            "You have survived 100% of your bad days so far. You've got this.",
+            "Self-care isn't selfish. You can't pour from an empty cup."
+        ];
+
+        function loadTip() {
+            const tipElement = document.getElementById('tip-text');
+            // Simple random tip
+            const randomTip = tips[Math.floor(Math.random() * tips.length)];
+
+            // Fade out effect manually
+            tipElement.style.opacity = 0;
+            setTimeout(() => {
+                tipElement.textContent = randomTip;
+                tipElement.style.opacity = 1;
+                tipElement.style.transition = 'opacity 0.3s ease';
+            }, 300);
+        }
+
+        // Load on start
+        window.addEventListener('DOMContentLoaded', loadTip);
+    </script>
+</body>
+
+</html>
